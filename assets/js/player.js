@@ -18,6 +18,7 @@ window.addEventListener("message", async e => {
 
   let rgx = /http.*$/gm;
   let is_beta = e.data.beta;
+  let force_mp4 = e.data.force_mp4;
   let needproxy = !e.data.noproxy;
   let streamrgx = /_,(\d+.mp4),(\d+.mp4),(\d+.mp4),(\d+.mp4),(\d+.mp4),.*?m3u8/;
   let streamrgx_three = /_,(\d+.mp4),(\d+.mp4),(\d+.mp4),.*?m3u8/;
@@ -71,7 +72,7 @@ window.addEventListener("message", async e => {
     // Padrão
     if (stream.format == 'adaptive_hls' && stream.hardsub_lang == user_lang) {
       video_stream_url = stream.url;
-      video_m3u8_array = await m3u8ListFromStream(video_stream_url);
+      video_m3u8_array = force_mp4 ? mp4ListFromStream(video_stream_url) : await m3u8ListFromStream(video_stream_url);
       video_mp4_array = mp4ListFromStream(video_stream_url);
       break;
     }
@@ -153,6 +154,7 @@ window.addEventListener("message", async e => {
       "autostart": false,
       "displayPlaybackLabel": true,
       "primary": "html5",
+      "cast": {},
       "playbackRateControls": [0.5, 0.75, 1, 1.25, 1.5, 2]
     }).on('playlistItem', e => {
       // tocar próximo ep
